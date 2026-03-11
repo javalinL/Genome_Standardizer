@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from tqdm import tqdm
 
 def export_all(processed_genes, cds_records, pep_records, id_mapping, prefix, work_dir, logger=None):
     out_gff = os.path.join(work_dir, "ALL.standard.gff3")
@@ -25,7 +26,7 @@ def export_all(processed_genes, cds_records, pep_records, id_mapping, prefix, wo
 
         f_gff.write("##gff-version 3\n")
 
-        for gid, gene in processed_genes.items():
+        for gid, gene in tqdm(processed_genes.items(), desc="         [Progress] Exporting   ", unit=" gene", ncols=100, leave=False):
             scaf = gene['scaf']
             strand = gene['strand']
 

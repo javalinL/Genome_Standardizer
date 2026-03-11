@@ -84,7 +84,7 @@ def build_robust_alias_map(fasta_file):
 def parse_args():
     desc_text = """
 Program:  gstd (Genome Standardizer)
-Version:  2.3.0 (Stable Release)
+Version:  2.4.0 (Stable Release)
 Summary:  A robust pipeline for standardizing plant genomes, resolving annotation 
           inconsistencies, and extracting CDS/PEP sequences cleanly.
 """

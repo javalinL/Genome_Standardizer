@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from tqdm import tqdm
 
 try:
     from Bio.Seq import Seq
 except ImportError:
     sys.exit("[FATAL] Biopython is required. Please install it: pip install biopython")
 
-def get_sequence_slice(genome_dict, scaf, start, end, strand, missing_scafs, logger):
+def get_sequence_slice(genome_dict, scaf, start, end, strand, missing_scafs):
     if scaf not in genome_dict:
-        if scaf not in missing_scafs:
-            if logger:
-                logger.warning(f"\n[Warning] Sequence mismatch! Scaffold '{scaf}' found in GFF but missing in FASTA.")
-            missing_scafs.add(scaf)
+        missing_scafs.add(scaf)
         return None
 
     seq_obj = genome_dict[scaf].seq[start - 1:end]
@@ -26,7 +24,7 @@ def extract_all(genome_seqs, processed_genes, logger=None):
     missing_scafs = set()
     empty_cds_count = 0
 
-    for gid, gene in processed_genes.items():
+    for gid, gene in tqdm(processed_genes.items(), desc="         [Progress] Extracting  ", unit=" gene", ncols=100, leave=False):
         scaf = gene['scaf']
         strand = gene['strand']
 
@@ -44,7 +42,7 @@ def extract_all(genome_seqs, processed_genes, logger=None):
 
             cds_seq = Seq("")
             for cf in cds_feats:
-                frag = get_sequence_slice(genome_seqs, scaf, cf['start'], cf['end'], strand, missing_scafs, logger)
+                frag = get_sequence_slice(genome_seqs, scaf, cf['start'], cf['end'], strand, missing_scafs)
                 if frag:
                     cds_seq += frag
 
@@ -61,7 +59,8 @@ def extract_all(genome_seqs, processed_genes, logger=None):
                     pass
 
     if missing_scafs and logger:
-        logger.warning(f"         [Diagnostic] {len(missing_scafs)} scaffold IDs missing in FASTA.")
+        sample_scafs = ", ".join(list(missing_scafs)[:5])
+        logger.warning(f"         [Diagnostic] {len(missing_scafs)} scaffold IDs missing in FASTA (e.g., {sample_scafs}...).")
     if empty_cds_count > 0 and logger:
         logger.warning(f"         [Diagnostic] {empty_cds_count} transcripts lack CDS coordinates.")
 

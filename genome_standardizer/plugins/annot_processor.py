@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from tqdm import tqdm
 
 
 def natural_sort_key(s):
@@ -8,7 +9,6 @@ def natural_sort_key(s):
 
 
 def _calculate_transcript_length(subfeatures):
-    """Calculate the coding length of a transcript. Fallback to exon length or genomic span."""
     cds_feats = [f for f in subfeatures if f['type'].upper() == 'CDS']
     if cds_feats:
         return sum(f['end'] - f['start'] + 1 for f in cds_feats)
@@ -35,14 +35,13 @@ def standardize_and_rename(raw_genes, prefix, step=10, longest_only=False):
 
     counter = 0
 
-    for gid in sorted_gids:
+    for gid in tqdm(sorted_gids, desc="         [Progress] Structuring ", unit=" gene", ncols=100, leave=False):
         gene = raw_genes[gid]
         mrnas = gene.get('mrnas', {})
 
         if not mrnas:
             continue
 
-        # Filter longest transcript if requested
         if longest_only and len(mrnas) > 1:
             longest_mid = max(mrnas.keys(), key=lambda mid: _calculate_transcript_length(mrnas[mid]))
             mrnas = {longest_mid: mrnas[longest_mid]}
