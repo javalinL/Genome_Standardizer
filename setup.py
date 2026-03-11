@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='genome-standardizer',
-    version='2.2.0',
+    version='2.3.0',
     description='A robust pipeline for standardizing complex polyploid genomes.',
     author='L. Javalin',
     author_email='beiningjia412@gmail.com',
