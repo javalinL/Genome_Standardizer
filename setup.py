@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='genome-standardizer',
-    version='2.4.0',
+    version='3.0.0',
     description='A robust pipeline for standardizing complex polyploid genomes.',
     author='L. javalin',
     author_email='beiningjia412@gmail.com',
@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'gstd=genome_standardizer.main:main', 
+            'gstd=genome_standardizer.main:main',
         ],
     },
     classifiers=[

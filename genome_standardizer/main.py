@@ -18,6 +18,8 @@ try:
 except ImportError as e:
     sys.exit(f"[FATAL] Failed to load modules: {e}")
 
+VERSION = "3.0.0"
+
 
 def setup_logger(prefix, work_dir, save_log):
     logger = logging.getLogger("gstd")
@@ -30,7 +32,9 @@ def setup_logger(prefix, work_dir, save_log):
     logger.addHandler(ch)
 
     if save_log:
-        file_fmt = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        file_fmt = logging.Formatter(
+            '%(asctime)s [%(levelname)s] %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S')
         log_file = os.path.join(work_dir, f"{prefix}_run.log")
         fh = logging.FileHandler(log_file, encoding='utf-8')
         fh.setFormatter(file_fmt)
@@ -40,7 +44,7 @@ def setup_logger(prefix, work_dir, save_log):
 
 
 def build_robust_alias_map(fasta_file):
-    alias_map = {}
+    alias_map    = {}
     conflict_set = set()
     opener = gzip.open if str(fasta_file).endswith('.gz') else open
 
@@ -48,14 +52,16 @@ def build_robust_alias_map(fasta_file):
         for line in f:
             if line.startswith('>'):
                 header_parts = line[1:].strip().split(maxsplit=1)
-                real_id = header_parts[0]
+                real_id      = header_parts[0]
                 alias_map[real_id] = real_id
 
                 if len(header_parts) > 1:
-                    description = header_parts[1]
+                    description       = header_parts[1]
                     generated_aliases = set()
 
-                    chr_match = re.search(r'chromosome\s+([A-Za-z0-9_]+)', description, re.IGNORECASE)
+                    chr_match = re.search(
+                        r'chromosome\s+([A-Za-z0-9_]+)',
+                        description, re.IGNORECASE)
                     if chr_match:
                         val = chr_match.group(1)
                         generated_aliases.update([
@@ -64,10 +70,13 @@ def build_robust_alias_map(fasta_file):
                             f"Chr{val}_hap1", f"Chr{val}_hap2"
                         ])
 
-                    scaf_match = re.search(r'scaffold[_\s]+([A-Za-z0-9_.]+)', description, re.IGNORECASE)
+                    scaf_match = re.search(
+                        r'scaffold[_\s]+([A-Za-z0-9_.]+)',
+                        description, re.IGNORECASE)
                     if scaf_match:
                         val = scaf_match.group(1)
-                        generated_aliases.update([f"scaffold_{val}", f"Scaffold_{val}"])
+                        generated_aliases.update(
+                            [f"scaffold_{val}", f"Scaffold_{val}"])
 
                     for alias in generated_aliases:
                         if alias in conflict_set:
@@ -82,10 +91,10 @@ def build_robust_alias_map(fasta_file):
 
 
 def parse_args():
-    desc_text = """
+    desc_text = f"""
 Program:  gstd (Genome Standardizer)
-Version:  2.4.0 (Stable Release)
-Summary:  A robust pipeline for standardizing plant genomes, resolving annotation 
+Version:  {VERSION} (Stable Release)
+Summary:  A robust pipeline for standardizing plant genomes, resolving annotation
           inconsistencies, and extracting CDS/PEP sequences cleanly.
 """
     parser = argparse.ArgumentParser(
@@ -94,27 +103,58 @@ Summary:  A robust pipeline for standardizing plant genomes, resolving annotatio
         usage="gstd <GFF> <FASTA> <PREFIX> [OPTIONS]"
     )
 
-    parser.add_argument("gff", help="Input GFF3/GTF file(s). Use comma to separate multiple subgenomes.")
-    parser.add_argument("fasta", help="Input FASTA file(s). Use comma to separate multiple subgenomes.")
+    parser.add_argument("gff",    help="Input GFF3/GTF file(s). Use comma to separate multiple subgenomes.")
+    parser.add_argument("fasta",  help="Input FASTA file(s). Use comma to separate multiple subgenomes.")
     parser.add_argument("prefix", help="Target output prefix (e.g., Oryz_sati).")
 
     group = parser.add_argument_group("Optional Arguments")
-    group.add_argument("--step", type=int, default=10, help="Step size for gene numbering (default: 10)")
-    group.add_argument("--add-prefix", type=str, default="", help="Isolate subgenomes safely (e.g., SubA_,SubB_)")
-    group.add_argument("--longest", action="store_true", help="Keep only the longest transcript per gene")
-    group.add_argument("--keep", action="store_true", help="Keep original input files (skip compression)")
-    group.add_argument("--save-log", action="store_true", help="Generate a detailed .log file in the output directory")
+    group.add_argument("--step",       type=int, default=10,
+                       help="Step size for gene numbering (default: 10)")
+    group.add_argument("--add-prefix", type=str, default="",
+                       help="Isolate subgenomes safely (e.g., SubA_,SubB_)")
+    group.add_argument("--longest",    action="store_true",
+                       help="Keep only the longest transcript per gene")
+    group.add_argument("--keep",       action="store_true",
+                       help="Keep original input files (skip compression)")
+    group.add_argument("--save-log",   action="store_true",
+                       help="Generate a detailed .log file in the output directory")
+
+    qc_group = parser.add_argument_group("Quality & Repair Options")
+    qc_group.add_argument("--no-repair", action="store_true",
+                          help="Disable Auto-Heal: do not infer CDS from exons or vice versa.\n"
+                               "Recommended when input contains non-coding genes (lncRNA, tRNA, etc.)\n"
+                               "to prevent false CDS generation.")
+    qc_group.add_argument("--pep-qc",   action="store_true",
+                          help="Enable translation quality control: report counts of\n"
+                               "non-ATG starts, internal stop codons, and truncated CDS.\n"
+                               "All sequences are still written to output; use for diagnostics.")
+
+    fmt_group = parser.add_argument_group("Output Format Options")
+    fmt_group.add_argument("--bed6",        action="store_true",
+                           help="Output standard BED6 format (6 columns: chrom/start/end/name/score/strand).\n"
+                                "Default outputs an extended 7-column format with original ID in col 7.\n"
+                                "Use --bed6 for compatibility with bedtools and genome browsers.")
+    fmt_group.add_argument("--keep-source", action="store_true",
+                           help="Preserve the original annotation source field (col 2) in GFF3 output\n"
+                                "instead of replacing it with '.'. Useful for tracing annotation origin\n"
+                                "(e.g., augustus, maker, SNAP, manual).")
+    fmt_group.add_argument("--low-mem",     action="store_true",
+                           help="Enable memory-efficient FASTA loading using on-disk byte-offset indexing.\n"
+                                "Sequences are read from disk on demand instead of loaded into RAM.\n"
+                                "Recommended for large genomes (e.g., wheat, sugarcane) to prevent OOM.\n"
+                                "Note: input FASTA must be uncompressed (not .gz).")
 
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
 
     args = parser.parse_args()
-    args.gff_list = args.gff.split(',')
+    args.gff_list   = args.gff.split(',')
     args.fasta_list = args.fasta.split(',')
 
     if len(args.gff_list) != len(args.fasta_list):
-        sys.exit(f"[FATAL] GFF count ({len(args.gff_list)}) does not match FASTA count ({len(args.fasta_list)}).")
+        sys.exit(f"[FATAL] GFF count ({len(args.gff_list)}) does not match "
+                 f"FASTA count ({len(args.fasta_list)}).")
 
     args.prefix_list = args.add_prefix.split(',') if args.add_prefix else []
     if args.prefix_list and len(args.prefix_list) != len(args.gff_list):
@@ -124,18 +164,19 @@ Summary:  A robust pipeline for standardizing plant genomes, resolving annotatio
 
 
 def main():
-    args = parse_args()
+    args       = parse_args()
     start_time = time.time()
-    work_dir = os.path.dirname(os.path.abspath(args.gff_list[0]))
+    work_dir   = os.path.dirname(os.path.abspath(args.gff_list[0]))
 
     logger = setup_logger(args.prefix, work_dir, args.save_log)
 
     logger.info("=" * 60)
-    logger.info(" Genome Standardization Pipeline Initialized")
+    logger.info(f" Genome Standardization Pipeline v{VERSION}")
     logger.info(f" Target Prefix : {args.prefix}")
     logger.info(f" Working Dir   : {work_dir}")
     if args.save_log:
-        logger.info(f" Log File      : {os.path.join(work_dir, args.prefix + '_run.log')}")
+        logger.info(f" Log File      : "
+                    f"{os.path.join(work_dir, args.prefix + '_run.log')}")
     if len(args.gff_list) > 1:
         mode_text = f"Polyploid Fusion ({len(args.gff_list)} parts)"
         if args.prefix_list:
@@ -145,12 +186,26 @@ def main():
         logger.info(" Transcript    : Longest Only")
     else:
         logger.info(" Transcript    : All Isoforms")
+
+    # Log active optional flags
+    flags_on = []
+    if args.no_repair:    flags_on.append("--no-repair")
+    if args.pep_qc:       flags_on.append("--pep-qc")
+    if args.bed6:         flags_on.append("--bed6")
+    if args.keep_source:  flags_on.append("--keep-source")
+    if args.low_mem:      flags_on.append("--low-mem")
+    if flags_on:
+        logger.info(f" Options       : {' '.join(flags_on)}")
+
     logger.info("=" * 60)
 
     try:
         logger.info("\n[Step 1] Loading and Parsing Inputs...")
-        genome_seqs, raw_genes = parser_plugin.parse_inputs(args.gff_list, args.fasta_list, args.prefix_list, logger)
-        logger.info(f"         Loaded {len(genome_seqs)} scaffolds and parsed {len(raw_genes)} genes.")
+        genome_seqs, raw_genes = parser_plugin.parse_inputs(
+            args.gff_list, args.fasta_list, args.prefix_list, logger,
+            no_repair=args.no_repair, low_mem=args.low_mem)
+        logger.info(f"         Loaded {len(list(genome_seqs.keys()))} scaffolds "
+                    f"and parsed {len(raw_genes)} genes.")
 
         logger.info("\n[Step 1.5] Running Smart Alias Sniffer...")
         global_alias_map = {}
@@ -159,47 +214,61 @@ def main():
             global_alias_map.update(amap)
             if conflicts:
                 logger.warning(
-                    f"         [Warning] Intercepted {len(conflicts)} conflicting aliases in {os.path.basename(fasta)}.")
+                    f"         [Warning] Intercepted {len(conflicts)} conflicting "
+                    f"aliases in {os.path.basename(fasta)}.")
 
         added_aliases = 0
         for alias, real_id in global_alias_map.items():
             if real_id in genome_seqs and alias not in genome_seqs:
-                genome_seqs[alias] = genome_seqs[real_id]
+                if args.low_mem:
+                    genome_seqs.add_alias(alias, real_id)
+                else:
+                    genome_seqs[alias] = genome_seqs[real_id]
                 added_aliases += 1
 
         if added_aliases > 0:
-            logger.info(f"         [Auto-Heal] Established {added_aliases} smart mapping links for memory sequences.")
+            logger.info(
+                f"         [Auto-Heal] Established {added_aliases} smart "
+                "mapping links for memory sequences.")
         else:
-            logger.info(f"         [Status OK] No sequence name inconsistencies detected.")
+            logger.info("         [Status OK] No sequence name inconsistencies detected.")
 
         logger.info("\n[Step 2] Processing Annotations (Structuring & Renaming)...")
         processed_genes, id_mapping = annot_processor.standardize_and_rename(
-            raw_genes, prefix=args.prefix, step=args.step, longest_only=args.longest
-        )
-        logger.info(f"         Successfully standardized {len(processed_genes)} genes.")
+            raw_genes, prefix=args.prefix, step=args.step,
+            longest_only=args.longest, keep_source=args.keep_source)
+        logger.info(
+            f"         Successfully standardized {len(processed_genes)} genes.")
 
         logger.info("\n[Step 3] Extracting Sequences (CDS, PEP)...")
-        cds_records, pep_records = seq_extractor.extract_all(genome_seqs, processed_genes, logger)
-        logger.info(f"         Extracted {len(cds_records)} CDS and {len(pep_records)} PEP sequences.")
+        cds_records, pep_records = seq_extractor.extract_all(
+            genome_seqs, processed_genes, logger,
+            pep_qc=args.pep_qc)
+        logger.info(
+            f"         Extracted {len(cds_records)} CDS and "
+            f"{len(pep_records)} PEP sequences.")
 
         logger.info("\n[Step 4] Exporting Standardized Files...")
         exporter_plugin.export_all(
             processed_genes, cds_records, pep_records, id_mapping,
-            prefix=args.prefix, work_dir=work_dir, logger=logger
-        )
+            prefix=args.prefix, work_dir=work_dir, logger=logger,
+            bed6=args.bed6, keep_source=args.keep_source)
 
         if not args.keep:
             logger.info("\n[Step 5] Compressing Original Inputs...")
-            cleanup_plugin.compress_inputs(args.gff_list + args.fasta_list, logger)
+            cleanup_plugin.compress_inputs(
+                args.gff_list + args.fasta_list, logger)
         else:
             logger.info("\n[Step 5] Skipped compression (--keep applied).")
 
         elapsed = time.time() - start_time
-        logger.info(f"\n[Done] Standardization completed successfully in {elapsed:.2f} seconds.")
+        logger.info(
+            f"\n[Done] Standardization completed successfully in {elapsed:.2f} seconds.")
 
     except Exception as e:
         logger.error(f"\n[FATAL ERROR] Pipeline halted unexpectedly:\n  {e}")
-        logger.error("Suggestion: Check input format or use --save-log for detailed diagnostics.")
+        logger.error(
+            "Suggestion: Check input format or use --save-log for detailed diagnostics.")
         sys.exit(1)
 
 
