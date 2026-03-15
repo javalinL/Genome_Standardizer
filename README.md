@@ -1,10 +1,10 @@
-# Genome Standardizer (`gstd`) v4.0.0
+# Genome Standardizer (`gstd`) v4.1.8
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Textual TUI](https://img.shields.io/badge/TUI-Textual%208.x-purple.svg)](https://github.com/Textualize/textual)
 
-A robust, memory-efficient pipeline for standardizing plant genome annotations, resolving structural inconsistencies, and extracting high-quality coding sequences for comparative genomics. v4.0.0 introduces an optional, fully interactive **Terminal User Interface (TUI)** that operates natively over SSH without X11 forwarding, making it suitable for remote HPC environments.
+A robust, memory-efficient pipeline for standardizing plant genome annotations, resolving structural inconsistencies, and extracting high-quality coding sequences for comparative genomics. v4.1.8 introduces an optional, fully interactive **Terminal User Interface (TUI)** that operates natively over SSH without X11 forwarding, making it suitable for remote HPC environments.
 
 ---
 
@@ -128,7 +128,7 @@ Five standardized files are produced in the working directory for each processed
 
 ## Acknowledgements
 
-The v4.0.0 release was developed using a structured Dual-Agent AI workflow under the direction of the lead developer:
+The v4.1.8 release was developed using a structured Dual-Agent AI workflow under the direction of the lead developer:
 
 - **L. javalin** (Lead Developer & Project Owner): Designed the core algorithmic logic, defined the bioinformatic standards, and orchestrated the multi-agent collaboration.
 - **Claude Sonnet 4.6** (Anthropic): Engineered the asynchronous pipeline wrapper, thread-safe message queue, i18n architecture, HPC Job Script Generator, and integration test suite.
