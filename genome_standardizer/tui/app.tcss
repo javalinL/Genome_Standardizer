@@ -42,7 +42,7 @@ TabPane {
 }
 
 Input {
-    width: 100%;
+    width: 1fr;
     margin-right: 1;
 }
 
