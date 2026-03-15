@@ -1,8 +1,8 @@
 {
   "app": {
     "title": "Genome Standardizer",
-    "subtitle": "gstd v4.1.0 — Terminal UI",
-    "version": "v4.1.0"
+    "subtitle": "gstd v4.1.8 — Terminal UI",
+    "version": "v4.1.8"
   },
 
   "lang": {
@@ -126,7 +126,7 @@
 
   "help": {
     "title": "Help & Quick Reference",
-    "body": "gstd (Genome Standardizer) v4.1.0\n\nCore workflow:\n  1. Set GFF/FASTA paths and an output prefix in the Run tab.\n  2. Toggle options as needed.\n  3. Click ▶ Run Locally to execute in-terminal, or ⚙ Generate HPC Script for cluster submission.\n\nPolyploid mode:\n  Separate multiple GFF/FASTA files with commas.\n  Use Subgenome Prefixes to prevent gene ID collisions.\n\nLow-memory mode:\n  For genomes > 10 GB, enable Low Memory Mode.\n  Input FASTA must be UNCOMPRESSED.\n\nOutputs per species:\n  ALL.standard.gff3  |  PREFIX.cds  |  PREFIX.pep\n  PREFIX.bed         |  PREFIX.id_list\n\nKeyboard shortcuts:\n  Ctrl+Q  Quit          Ctrl+L  Switch Language\n  Ctrl+R  Run           Ctrl+S  Generate Script\n  F1      This help"
+    "body": "gstd (Genome Standardizer) v4.1.8\n\nCore workflow:\n  1. Set GFF/FASTA paths and an output prefix in the Run tab.\n  2. Toggle options as needed.\n  3. Click ▶ Run Locally to execute in-terminal, or ⚙ Generate HPC Script for cluster submission.\n\nPolyploid mode:\n  Separate multiple GFF/FASTA files with commas.\n  Use Subgenome Prefixes to prevent gene ID collisions.\n\nLow-memory mode:\n  For genomes > 10 GB, enable Low Memory Mode.\n  Input FASTA must be UNCOMPRESSED.\n\nOutputs per species:\n  ALL.standard.gff3  |  PREFIX.cds  |  PREFIX.pep\n  PREFIX.bed         |  PREFIX.id_list\n\nKeyboard shortcuts:\n  Ctrl+Q  Quit          Ctrl+L  Switch Language\n  Ctrl+R  Run           Ctrl+S  Generate Script\n  F1      This help"
   },
 
   "bindings": {
