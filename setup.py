@@ -18,8 +18,10 @@ setup(
         ],
     },
     package_data={
-        # Ensure locale JSON files are bundled when installed via pip
-        'genome_standardizer': ['locales/*.json'],
+        'genome_standardizer': [
+            'locales/*.json',
+            'tui/*.tcss',
+        ],
     },
     entry_points={
         'console_scripts': [
