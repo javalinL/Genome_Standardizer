@@ -23,7 +23,7 @@ from genome_standardizer.tui.job_generator import HpcJobParams, generate_script
 from genome_standardizer.tui.i18n import I18n, SUPPORTED_LANGS
 
 DEFAULT_LANG = "en"
-APP_VERSION = "4.0.0"
+APP_VERSION = "4.1.0"
 
 
 # ╔═══════════════════════════════════════════════════════════════════════════╗
