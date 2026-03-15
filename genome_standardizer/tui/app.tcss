@@ -17,7 +17,7 @@ Header {
 /* Tab Content Areas */
 TabbedContent {
     height: 100%;
-    margin-top: 1;
+    margin-top: 0;
 }
 
 TabPane {
@@ -38,7 +38,7 @@ TabPane {
 .input-row {
     layout: horizontal;
     height: auto;
-    margin-bottom: 1;
+    margin-bottom: 0;
 }
 
 Input {
@@ -47,7 +47,7 @@ Input {
 }
 
 Label {
-    padding: 1;
+    padding: 0 1;
     color: $text-muted;
 }
 
@@ -63,7 +63,7 @@ Label {
 .toggles-container {
     layout: horizontal;
     height: auto;
-    margin-bottom: 1;
+    margin-bottom: 0;
 }
 
 Switch {
@@ -87,7 +87,7 @@ Collapsible {
     layout: horizontal;
     align: center middle;
     height: 3;
-    margin-top: 2;
+    margin-top: 1;
 }
 
 Button {
