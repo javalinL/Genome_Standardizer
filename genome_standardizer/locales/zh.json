@@ -80,7 +80,8 @@
     "step_extract":   "[4/6] 投射 CDS 坐标并提取翻译 PEP 序列…",
     "step_export":    "[5/6] 编译并导出终态标准格式文件…",
     "step_compress":  "[6/6] 封卷并压缩原始底座数据…",
-    "step_done":      "GSTD 核心引擎安全挂起。"
+    "step_done":        "GSTD 核心引擎安全挂起。",
+    "pipeline_running": "流水线正在运行，请等待本次任务完成。"
   },
   "job_script": {
     "section_title": "超算节点调度器配置",
@@ -139,9 +140,11 @@
     "cpus_invalid":          "线程/核心数异常，须为正整数。"
   },
   "notify": {
-    "script_copied":  "脚本已拷贝至系统剪贴板，请到终端 vim 中粘贴。",
-    "script_saved":   "调度脚本已安全落盘至：{path}",
-    "log_copied":     "执行日志已拷贝至剪贴板。",
-    "lang_switched":  "Global Language Switched to: {lang}"
+    "script_copied":         "脚本已拷贝至系统剪贴板。",
+    "script_saved":          "调度脚本已保存至：{path}",
+    "log_copied":            "执行日志已拷贝至剪贴板。",
+    "lang_switched":         "语言已切换至：{lang}",
+    "clipboard_unavailable": "剪贴板不可用：{error}",
+    "save_failed":           "脚本保存失败：{error}"
   }
 }

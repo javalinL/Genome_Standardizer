@@ -283,7 +283,7 @@ class GstdTuiApp(App):
             pyperclip.copy(text)
             self.notify(self.i18n.t(f"notify.{notify_key}"))
         except Exception as e:
-            self.notify(f"Clipboard unavailable: {e}", severity="warning")
+            self.notify(self.i18n.t("notify.clipboard_unavailable", error=e), severity="warning")
 
     def _save_script(self) -> None:
         job_name = self.query_one("#job_name_input", Input).value or "gstd_run"
@@ -294,7 +294,7 @@ class GstdTuiApp(App):
                 f.write(self._last_script)
             self.notify(self.i18n.t("notify.script_saved", path=path))
         except Exception as e:
-            self.notify(f"Save failed: {e}", severity="error")
+            self.notify(self.i18n.t("notify.save_failed", error=e), severity="error")
 
     def action_toggle_lang(self) -> None:
         current_idx = SUPPORTED_LANGS.index(self.i18n.lang)
@@ -384,32 +384,72 @@ class GstdTuiApp(App):
         )
 
     def _refresh_labels(self) -> None:
-        # Update Tab titles via TabbedContent's underlying Tab widgets
+        # ── Tab titles ────────────────────────────────────────────────────────
         tabs = self.query_one("#main_tabs", TabbedContent)
-        tabs.get_tab("tab_run").label   = self.i18n.t("tabs.run")
-        tabs.get_tab("tab_log").label   = self.i18n.t("tabs.log")
-        tabs.get_tab("tab_job").label   = self.i18n.t("tabs.job_script")
-        # Refresh tooltips for current language
+        tabs.get_tab("tab_run").label = self.i18n.t("tabs.run")
+        tabs.get_tab("tab_log").label = self.i18n.t("tabs.log")
+        tabs.get_tab("tab_job").label = self.i18n.t("tabs.job_script")
         self._apply_tooltips()
-        # Update Run Tab Labels
+
+        # ── Run tab — Input section ───────────────────────────────────────────
         self.query_one("#input_sec_title", Label).update(self.i18n.t("input.section_title"))
-        self.query_one("#gff_label", Label).update(self.i18n.t("input.gff_label"))
+        self.query_one("#gff_label",   Label).update(self.i18n.t("input.gff_label"))
         self.query_one("#fasta_label", Label).update(self.i18n.t("input.fasta_label"))
-        self.query_one("#prefix_label", Label).update(self.i18n.t("input.prefix_label"))
+        self.query_one("#prefix_label",Label).update(self.i18n.t("input.prefix_label"))
+        self.query_one("#multi_file_hint", Label).update(self.i18n.t("input.multi_file_hint"))
         for btn in self.query("Button#gff_browse_btn, Button#fasta_browse_btn"):
             btn.label = self.i18n.t("input.browse_btn")
-        # Update Buttons
-        self.query_one("#run_btn", Button).label = self.i18n.t("buttons.run_local")
-        self.query_one("#gen_script_btn", Button).label = self.i18n.t("buttons.gen_script")
+        self.query_one("#gff_input",   Input).placeholder = self.i18n.t("input.gff_placeholder")
+        self.query_one("#fasta_input", Input).placeholder = self.i18n.t("input.fasta_placeholder")
+        self.query_one("#prefix_input",Input).placeholder = self.i18n.t("input.prefix_placeholder")
+
+        # ── Run tab — Basic Options ───────────────────────────────────────────
+        self.query_one("#basic_sec_title",  Label).update(self.i18n.t("basic_options.section_title"))
+        self.query_one("#step_label",       Label).update(self.i18n.t("basic_options.step_label"))
+        self.query_one("#longest_label",    Label).update(self.i18n.t("basic_options.longest_label"))
+        self.query_one("#keep_label",       Label).update(self.i18n.t("basic_options.keep_label"))
+        self.query_one("#save_log_label",   Label).update(self.i18n.t("basic_options.save_log_label"))
+
+        # ── Run tab — Advanced Options ────────────────────────────────────────
+        self.query_one("#advanced_collapsible", Collapsible).title = self.i18n.t("advanced_options.section_title")
+        self.query_one("#add_prefix_label",  Label).update(self.i18n.t("advanced_options.add_prefix_label"))
+        self.query_one("#no_repair_label",   Label).update(self.i18n.t("advanced_options.no_repair_label"))
+        self.query_one("#pep_qc_label",      Label).update(self.i18n.t("advanced_options.pep_qc_label"))
+        self.query_one("#bed6_label",        Label).update(self.i18n.t("advanced_options.bed6_label"))
+        self.query_one("#keep_source_label", Label).update(self.i18n.t("advanced_options.keep_source_label"))
+        self.query_one("#low_mem_label",     Label).update(self.i18n.t("advanced_options.low_mem_label"))
+        self.query_one("#add_prefix_input",  Input).placeholder = self.i18n.t("advanced_options.add_prefix_placeholder")
+
+        # ── Run tab — Buttons ────────────────────────────────────────────────
+        self.query_one("#run_btn",       Button).label = self.i18n.t("buttons.run_local")
+        self.query_one("#gen_script_btn",Button).label = self.i18n.t("buttons.gen_script")
+
+        # ── Log tab ───────────────────────────────────────────────────────────
+        if not self._running:
+            self.query_one("#progress_label", Label).update(self.i18n.t("log.idle"))
         self.query_one("#clear_log_btn", Button).label = self.i18n.t("buttons.clear_log")
-        self.query_one("#copy_log_btn", Button).label = self.i18n.t("buttons.copy_log")
-        self.query_one("#gen_job_btn", Button).label = self.i18n.t("job_script.gen_btn")
-        self.query_one("#copy_script_btn", Button).label = self.i18n.t("buttons.copy_script")
-        self.query_one("#save_script_btn", Button).label = self.i18n.t("buttons.save_script")
+        self.query_one("#copy_log_btn",  Button).label = self.i18n.t("buttons.copy_log")
+
+        # ── Job Script tab ────────────────────────────────────────────────────
+        self.query_one("#job_intro",        Label).update(self.i18n.t("job_script.intro"))
+        self.query_one("#scheduler_label",  Label).update(self.i18n.t("job_script.scheduler_label"))
+        self.query_one("#job_name_label",   Label).update(self.i18n.t("job_script.job_name_label"))
+        self.query_one("#partition_label",  Label).update(self.i18n.t("job_script.partition_label"))
+        self.query_one("#nodes_label",      Label).update(self.i18n.t("job_script.nodes_label"))
+        self.query_one("#cpus_label",       Label).update(self.i18n.t("job_script.cpus_label"))
+        self.query_one("#mem_label",        Label).update(self.i18n.t("job_script.mem_label"))
+        self.query_one("#walltime_label",   Label).update(self.i18n.t("job_script.walltime_label"))
+        self.query_one("#conda_env_label",  Label).update(self.i18n.t("job_script.conda_env_label"))
+        self.query_one("#work_dir_label",   Label).update(self.i18n.t("job_script.work_dir_label"))
+        self.query_one("#output_log_label", Label).update(self.i18n.t("job_script.output_log_label"))
+        self.query_one("#preview_title",    Label).update(self.i18n.t("job_script.preview_title"))
+        self.query_one("#gen_job_btn",      Button).label = self.i18n.t("job_script.gen_btn")
+        self.query_one("#copy_script_btn",  Button).label = self.i18n.t("buttons.copy_script")
+        self.query_one("#save_script_btn",  Button).label = self.i18n.t("buttons.save_script")
 
     def _start_pipeline(self, args: PipelineArgs) -> None:
         if self._running:
-            self.notify("A pipeline is already running.", severity="warning")
+            self.notify(self.i18n.t("log.pipeline_running"), severity="warning")
             return
         self._running = True
         self.run_worker(self._execute_run(args), exclusive=True)

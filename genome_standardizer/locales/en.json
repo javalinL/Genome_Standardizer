@@ -87,7 +87,8 @@
     "step_extract":   "[4/6] Extracting CDS / PEP sequences…",
     "step_export":    "[5/6] Exporting standardized files…",
     "step_compress":  "[6/6] Compressing original inputs…",
-    "step_done":      "Pipeline finished successfully."
+    "step_done":      "Pipeline finished successfully.",
+    "pipeline_running": "A pipeline is already running."
   },
 
   "job_script": {
@@ -152,9 +153,11 @@
   },
 
   "notify": {
-    "script_copied":  "Script copied to clipboard.",
-    "script_saved":   "Script saved to: {path}",
-    "log_copied":     "Log copied to clipboard.",
-    "lang_switched":  "Language switched to: {lang}"
+    "script_copied":         "Script copied to clipboard.",
+    "script_saved":          "Script saved to: {path}",
+    "log_copied":            "Log copied to clipboard.",
+    "lang_switched":         "Language switched to: {lang}",
+    "clipboard_unavailable": "Clipboard unavailable: {error}",
+    "save_failed":           "Save failed: {error}"
   }
 }
