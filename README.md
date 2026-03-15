@@ -132,7 +132,7 @@ The v4.0.0 release was developed using a structured Dual-Agent AI workflow under
 
 - **L. javalin** (Lead Developer & Project Owner): Designed the core algorithmic logic, defined the bioinformatic standards, and orchestrated the multi-agent collaboration.
 - **Claude Sonnet 4.6** (Anthropic): Engineered the asynchronous pipeline wrapper, thread-safe message queue, i18n architecture, HPC Job Script Generator, and integration test suite.
-- **Gemini 2.5 Pro** (Google DeepMind): Designed and implemented the complete Textual UI layout (`app.py`), dual-theme stylesheet (`app.tcss`), and bioinformatically refined English/Chinese localizations.
+- **Gemini 3.1 Pro** (Google DeepMind): Designed and implemented the complete Textual UI layout (`app.py`), dual-theme stylesheet (`app.tcss`), and bioinformatically refined English/Chinese localizations.
 
 ---
 
