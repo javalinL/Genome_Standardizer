@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='genome-standardizer',
-    version='3.0.0',
-    description='A robust pipeline for standardizing complex polyploid genomes.',
+    version='4.0.0',
+    description='A robust pipeline for standardizing complex polyploid genomes, '
+                'with an optional Terminal User Interface (TUI).',
     author='L. javalin',
     author_email='beiningjia412@gmail.com',
     packages=find_packages(),
@@ -11,9 +12,19 @@ setup(
         'biopython>=1.78',
         'tqdm>=4.60.0',
     ],
+    extras_require={
+        'tui': [
+            'textual>=0.47.0',
+        ],
+    },
+    package_data={
+        # Ensure locale JSON files are bundled when installed via pip
+        'genome_standardizer': ['locales/*.json'],
+    },
     entry_points={
         'console_scripts': [
             'gstd=genome_standardizer.main:main',
+            'gstd-tui=genome_standardizer.tui.app:run_tui',
         ],
     },
     classifiers=[
@@ -21,4 +32,5 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
+    python_requires='>=3.8',
 )

@@ -1,0 +1,160 @@
+{
+  "app": {
+    "title": "Genome Standardizer",
+    "subtitle": "gstd v4.0.0 — Terminal UI",
+    "version": "v4.0.0"
+  },
+
+  "lang": {
+    "label": "Language",
+    "en": "English",
+    "zh": "中文",
+    "toggle_hint": "Ctrl+L to switch language"
+  },
+
+  "tabs": {
+    "run": "Run",
+    "log": "Log & Output",
+    "job_script": "Job Script"
+  },
+
+  "input": {
+    "section_title": "Input Files",
+    "gff_label": "GFF / GTF File(s)",
+    "gff_placeholder": "/path/to/annotation.gff3.gz",
+    "fasta_label": "FASTA File(s)",
+    "fasta_placeholder": "/path/to/genome.fasta.gz",
+    "prefix_label": "Output Prefix",
+    "prefix_placeholder": "e.g.  Oryz_sati",
+    "browse_btn": "Browse",
+    "multi_file_hint": "For polyploids: separate multiple files with commas   e.g.  subA.gff,subB.gff"
+  },
+
+  "basic_options": {
+    "section_title": "Basic Options",
+    "step_label": "Gene ID Step",
+    "step_tooltip": "Numeric increment between consecutive gene IDs (default: 10).",
+    "longest_label": "Longest Transcript Only",
+    "longest_tooltip": "Retain only the longest transcript (representative isoform) per locus. Highly recommended for phylogenetic tree construction and Ka/Ks evolutionary rate calculations.",
+    "keep_label": "Keep Original Files",
+    "keep_tooltip": "Skip gzip compression of input files after processing.",
+    "save_log_label": "Save Log File",
+    "save_log_tooltip": "Write a timestamped  <prefix>_run.log  file in the output directory."
+  },
+
+  "advanced_options": {
+    "section_title": "Advanced Options",
+    "add_prefix_label": "Subgenome Prefixes",
+    "add_prefix_placeholder": "e.g.  SubA_,SubB_",
+    "add_prefix_tooltip": "Assign isolated ID prefixes to each polyploid subgenome or phased assembly to prevent fatal sequence/ID collisions during fusion.",
+    "no_repair_label": "Disable Auto-Heal",
+    "no_repair_tooltip": "Do not infer CDS from exons (or vice versa). Use this when the input contains non-coding genes (lncRNA, tRNA, pseudogenes) to prevent false CDS generation.",
+    "pep_qc_label": "PEP Quality Control",
+    "pep_qc_tooltip": "Report counts of non-ATG starts, internal stop codons, and truncated CDS at run completion. All sequences are still written to output.",
+    "bed6_label": "Standard BED6 Output",
+    "bed6_tooltip": "Output 6-column BED format (chrom/start/end/name/score/strand) for full compatibility with bedtools and genome browsers. Default is extended 7-column with original ID in col 7.",
+    "keep_source_label": "Preserve Source Field",
+    "keep_source_tooltip": "Retain the original annotation source tag (e.g. augustus, maker, SNAP) in GFF3 column 2 for provenance tracking.",
+    "low_mem_label": "Low Memory Mode",
+    "low_mem_tooltip": "Use on-disk byte-offset FASTA indexing instead of loading sequences into RAM. Recommended for very large genomes (e.g. wheat ≥ 15 GB, sugarcane). Requires UNCOMPRESSED FASTA input."
+  },
+
+  "buttons": {
+    "run_local": "▶  Run Locally",
+    "gen_script": "⚙  Generate HPC Script",
+    "clear_log": "Clear",
+    "copy_log": "Copy Log",
+    "copy_script": "Copy Script",
+    "save_script": "Save Script",
+    "browse": "Browse",
+    "close": "Close",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+
+  "log": {
+    "section_title": "Execution Log",
+    "progress_step": "Step {current} / {total}",
+    "current_step_label": "{label}",
+    "idle": "Idle — configure parameters in the Run tab and press  ▶ Run Locally",
+    "running": "Running…",
+    "done": "✔  Completed in {elapsed:.2f} s",
+    "error": "✘  Error: {message}",
+    "result_summary": "Result: {genes} genes  →  {cds} CDS  /  {pep} PEP sequences",
+    "step_parse":     "[1/6] Loading and parsing inputs…",
+    "step_alias":     "[2/6] Running Smart Alias Sniffer…",
+    "step_annotate":  "[3/6] Structuring & renaming annotations…",
+    "step_extract":   "[4/6] Extracting CDS / PEP sequences…",
+    "step_export":    "[5/6] Exporting standardized files…",
+    "step_compress":  "[6/6] Compressing original inputs…",
+    "step_done":      "Pipeline finished successfully."
+  },
+
+  "job_script": {
+    "section_title": "HPC Job Script Generator",
+    "intro": "Fill in the cluster parameters below. The generated script wraps the exact gstd CLI command derived from your Run-tab settings.",
+    "scheduler_label": "Scheduler",
+    "scheduler_slurm": "SLURM  (#SBATCH)",
+    "scheduler_pbs":   "PBS / LSF  (#PBS)",
+    "job_name_label":  "Job Name",
+    "job_name_placeholder": "gstd_run",
+    "partition_label": "Partition / Queue",
+    "partition_placeholder": "normal",
+    "nodes_label": "Nodes",
+    "cpus_label": "CPUs per Task",
+    "mem_label": "Memory (GB)",
+    "walltime_label": "Walltime",
+    "walltime_placeholder": "HH:MM:SS",
+    "conda_env_label": "Conda Environment",
+    "conda_env_placeholder": "core_dev",
+    "work_dir_label": "Working Directory",
+    "work_dir_placeholder": "/scratch/user/project",
+    "output_log_label": "Scheduler Log",
+    "output_log_placeholder": "/scratch/user/gstd_%j.log",
+    "preview_title": "Generated Script Preview",
+    "gen_btn": "Generate Script",
+    "generated_hint": "Script generated — review, then copy or save to disk."
+  },
+
+  "file_browser": {
+    "title": "Select File",
+    "hint": "Navigate with arrow keys, Enter to expand, Space to select.",
+    "confirm_btn": "Select",
+    "cancel_btn": "Cancel"
+  },
+
+  "help": {
+    "title": "Help & Quick Reference",
+    "body": "gstd (Genome Standardizer) v4.0.0\n\nCore workflow:\n  1. Set GFF/FASTA paths and an output prefix in the Run tab.\n  2. Toggle options as needed.\n  3. Click ▶ Run Locally to execute in-terminal, or ⚙ Generate HPC Script for cluster submission.\n\nPolyploid mode:\n  Separate multiple GFF/FASTA files with commas.\n  Use Subgenome Prefixes to prevent gene ID collisions.\n\nLow-memory mode:\n  For genomes > 10 GB, enable Low Memory Mode.\n  Input FASTA must be UNCOMPRESSED.\n\nOutputs per species:\n  ALL.standard.gff3  |  PREFIX.cds  |  PREFIX.pep\n  PREFIX.bed         |  PREFIX.id_list\n\nKeyboard shortcuts:\n  Ctrl+Q  Quit          Ctrl+L  Switch Language\n  Ctrl+R  Run           Ctrl+S  Generate Script\n  F1      This help"
+  },
+
+  "bindings": {
+    "quit":        "Quit",
+    "toggle_lang": "Language",
+    "run":         "Run",
+    "gen_script":  "Gen Script",
+    "help":        "Help"
+  },
+
+  "validation": {
+    "gff_required":          "GFF file path is required.",
+    "fasta_required":        "FASTA file path is required.",
+    "prefix_required":       "Output prefix is required.",
+    "gff_not_found":         "GFF file not found: {path}",
+    "fasta_not_found":       "FASTA file not found: {path}",
+    "count_mismatch":        "Number of GFF files must equal number of FASTA files.",
+    "prefix_count_mismatch": "Number of subgenome prefixes must equal number of input file pairs.",
+    "step_invalid":          "Gene ID step must be a positive integer.",
+    "walltime_invalid":      "Walltime must be in HH:MM:SS format.",
+    "mem_invalid":           "Memory must be a positive integer (GB).",
+    "nodes_invalid":         "Node count must be a positive integer.",
+    "cpus_invalid":          "CPU count must be a positive integer."
+  },
+
+  "notify": {
+    "script_copied":  "Script copied to clipboard.",
+    "script_saved":   "Script saved to: {path}",
+    "log_copied":     "Log copied to clipboard.",
+    "lang_switched":  "Language switched to: {lang}"
+  }
+}

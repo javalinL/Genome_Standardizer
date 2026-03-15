@@ -1,0 +1,145 @@
+/* gstd v4.0.0 TUI Styling - Academic Light / Cyber Geek Dark Support */
+
+/* Global Settings */
+Screen {
+    background: $surface-darken-1;
+    layout: vertical;
+}
+
+/* Header & Logo styling */
+Header {
+    dock: top;
+    background: $primary-darken-2;
+    color: $text;
+    text-style: bold;
+}
+
+/* Tab Content Areas */
+TabbedContent {
+    height: 100%;
+    margin-top: 1;
+}
+
+TabPane {
+    padding: 1 2;
+    overflow-y: auto;
+}
+
+/* Input Grids and Containers */
+.input-grid {
+    layout: grid;
+    grid-size: 4;
+    grid-columns: 10fr 10fr 10fr 2fr;
+    grid-rows: 3;
+    height: auto;
+    margin-bottom: 1;
+}
+
+.input-row {
+    layout: horizontal;
+    height: auto;
+    margin-bottom: 1;
+}
+
+Input {
+    width: 100%;
+    margin-right: 1;
+}
+
+Label {
+    padding: 1;
+    color: $text-muted;
+}
+
+.section-title {
+    color: $secondary;
+    text-style: bold;
+    padding-bottom: 1;
+    margin-top: 1;
+    border-bottom: solid $primary-muted;
+}
+
+/* Toggle Switches Area */
+.toggles-container {
+    layout: horizontal;
+    height: auto;
+    margin-bottom: 1;
+}
+
+Switch {
+    margin-right: 1;
+}
+
+.switch-label {
+    padding-top: 1;
+    margin-right: 3;
+}
+
+/* Advanced Collapsible */
+Collapsible {
+    margin-top: 1;
+    border: round $primary-muted;
+    background: $surface;
+}
+
+/* Action Buttons */
+.action-buttons {
+    layout: horizontal;
+    align: center middle;
+    height: 3;
+    margin-top: 2;
+}
+
+Button {
+    margin: 0 2;
+}
+
+#run_btn {
+    background: $success;
+    color: $text;
+    text-style: bold;
+}
+
+#gen_script_btn, #gen_job_btn {
+    background: $accent;
+    color: $text;
+    text-style: bold;
+}
+
+/* Log Tab Specifics */
+#progress_bar {
+    margin: 1 0;
+}
+
+#rich_log, #script_preview {
+    height: 1fr;
+    border: solid $primary-muted;
+    background: $surface-darken-1;
+    padding: 0 1;
+}
+
+/* Modal Screens */
+FileBrowserModal, HelpModal {
+    align: center middle;
+    background: $background 80%;
+}
+
+#file_browser_container, #help_container {
+    width: 80%;
+    height: 80%;
+    border: thick $primary;
+    background: $surface;
+    padding: 1 2;
+}
+
+DirectoryTree {
+    height: 1fr;
+    border: solid $primary-muted;
+    margin-bottom: 1;
+}
+
+.modal-buttons {
+    layout: horizontal;
+    align: right bottom;
+    height: 3;
+}

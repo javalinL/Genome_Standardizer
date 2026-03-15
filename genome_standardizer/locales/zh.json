@@ -1,0 +1,147 @@
+{
+  "app": {
+    "title": "基因组标准化工具",
+    "subtitle": "gstd v4.0.0 — 终端图形界面",
+    "version": "v4.0.0"
+  },
+  "lang": {
+    "label": "语言",
+    "en": "English",
+    "zh": "中文",
+    "toggle_hint": "Ctrl+L 切换语言"
+  },
+  "tabs": {
+    "run": "运行工作台",
+    "log": "日志与输出",
+    "job_script": "超算作业脚本"
+  },
+  "input": {
+    "section_title": "输入文件",
+    "gff_label": "GFF / GTF 注释文件",
+    "gff_placeholder": "/path/to/annotation.gff3.gz",
+    "fasta_label": "FASTA 基因组文件",
+    "fasta_placeholder": "/path/to/genome.fasta.gz",
+    "prefix_label": "输出前缀",
+    "prefix_placeholder": "例：Oryz_sati",
+    "browse_btn": "📂 浏览",
+    "multi_file_hint": "多倍体模式：多个文件以英文逗号分隔，例：subA.gff,subB.gff"
+  },
+  "basic_options": {
+    "section_title": "基础配置",
+    "step_label": "基因编号步长",
+    "step_tooltip": "相邻基因 ID 之间的数字间隔（默认：10）。",
+    "longest_label": "仅提取最长转录本",
+    "longest_tooltip": "每个基因座仅保留最长转录本（代表性异构体），强烈推荐用于系统发育树构建及 Ka/Ks 演化速率计算。",
+    "keep_label": "保留原始文件",
+    "keep_tooltip": "处理完成后，跳过对输入文件的 gzip 自动压缩阶段。",
+    "save_log_label": "保存日志文件",
+    "save_log_tooltip": "在输出目录中生成带时间戳的 <前缀>_run.log 运行日志。"
+  },
+  "advanced_options": {
+    "section_title": "高级选项与极客模式",
+    "add_prefix_label": "亚基因组前缀 (隔离雷达)",
+    "add_prefix_placeholder": "例：SubA_,SubB_",
+    "add_prefix_tooltip": "为多倍体或分型基因组(Phased)的各亚组分配独立前缀，防止合并时发生序列或基因 ID 碰撞。",
+    "no_repair_label": "禁用自动修复 (Auto-Heal)",
+    "no_repair_tooltip": "禁止从 exon 推断 CDS（反之亦然）。当输入包含非编码基因（lncRNA、假基因）时请开启，以防错误生成 CDS。",
+    "pep_qc_label": "多肽序列质控 (PEP QC)",
+    "pep_qc_tooltip": "运行结束时报告非 ATG 起始密码子、内部提前终止密码子及不完整 CDS 的数量。",
+    "bed6_label": "标准 BED6 输出",
+    "bed6_tooltip": "强制输出严格的 6 列 BED 格式，确保与 bedtools 及 IGV 等基因组浏览器完全兼容。",
+    "keep_source_label": "保留注释来源 (Source Track)",
+    "keep_source_tooltip": "在 GFF3 第 2 列中保留原始预测软件来源（如 augustus、maker），便于后期溯源追踪。",
+    "low_mem_label": "低内存索引模式",
+    "low_mem_tooltip": "使用磁盘字节偏移索引代替全量内存加载，专为小麦(>15GB)、甘蔗等超大基因组设计。注意：输入必须为未压缩的 FASTA。"
+  },
+  "buttons": {
+    "run_local": "⚡ 立即本地运行",
+    "gen_script": "📝 生成超算脚本",
+    "clear_log": "🗑️ 清空面板",
+    "copy_log": "📋 复制日志",
+    "copy_script": "📋 复制脚本",
+    "save_script": "💾 保存至文件",
+    "browse": "浏览",
+    "close": "关闭",
+    "confirm": "确认选中",
+    "cancel": "取消"
+  },
+  "log": {
+    "section_title": "实时诊断控制台",
+    "progress_step": "执行步骤 {current} / {total}",
+    "current_step_label": "{label}",
+    "idle": "系统就绪 — 请在「运行工作台」配置参数后启动流水线...",
+    "running": "流水线全速解析中…",
+    "done": "✔ 标准化洗礼完成，极限耗时 {elapsed:.2f} 秒",
+    "error": "✘ 致命环境错误：{message}",
+    "result_summary": "► 产出报告：{genes} 个有效基因座  →  {cds} 条 CDS 序列  /  {pep} 条 PEP 多肽",
+    "step_parse":     "[1/6] 加载并映射基因组/注释坐标网…",
+    "step_alias":     "[2/6] 激活智能别名嗅探器与孤儿节点扫描…",
+    "step_annotate":  "[3/6] 重构层次结构与序列重命名…",
+    "step_extract":   "[4/6] 投射 CDS 坐标并提取翻译 PEP 序列…",
+    "step_export":    "[5/6] 编译并导出终态标准格式文件…",
+    "step_compress":  "[6/6] 封卷并压缩原始底座数据…",
+    "step_done":      "GSTD 核心引擎安全挂起。"
+  },
+  "job_script": {
+    "section_title": "超算节点调度器配置",
+    "intro": "填写您的 HPC 集群环境，将自动根据「运行工作台」参数生成对应的任务调度脚本，拒绝登录节点滥用。",
+    "scheduler_label": "调度引擎",
+    "scheduler_slurm": "SLURM (#SBATCH)",
+    "scheduler_pbs":   "PBS/LSF (#PBS)",
+    "job_name_label":  "任务名称",
+    "job_name_placeholder": "gstd_run",
+    "partition_label": "投递队列/分区",
+    "partition_placeholder": "normal",
+    "nodes_label": "申请节点数",
+    "cpus_label": "申请线程数",
+    "mem_label": "物理内存 (GB)",
+    "walltime_label": "最大墙上时间",
+    "walltime_placeholder": "HH:MM:SS",
+    "conda_env_label": "Conda 激活环境",
+    "conda_env_placeholder": "core_dev",
+    "work_dir_label": "计算工作目录",
+    "work_dir_placeholder": "/scratch/user/project",
+    "output_log_label": "挂载日志路径",
+    "output_log_placeholder": "gstd_%j.log",
+    "preview_title": "⬇ 脚本实时预览 (只读)",
+    "gen_btn": "⚙ 生成提交流水线",
+    "generated_hint": "脚本构建完毕 — 请检查下方预览，随后复制或保存至超算节点。"
+  },
+  "file_browser": {
+    "title": "资源管理器",
+    "hint": "↑↓ 导航  |  Enter 展开目录  |  Space 确认选择文件",
+    "confirm_btn": "✅ 确认",
+    "cancel_btn": "❌ 取消"
+  },
+  "help": {
+    "title": "GSTD 极客操作手册",
+    "body": "Genome Standardizer (gstd) v4.0.0\n\n【架构设计】\n本界面为双Agent联合构建的工业级前端，完美适配 Linux 原生终端穿透。\n\n【核心工作流】\n1. 在「运行工作台」绑定 GFF 和 FASTA 靶向文件。\n2. 按需激活底层的微调雷达选项。\n3. 本机调试按 [⚡ 本地运行]；提交超算按 [📝 生成脚本]。\n\n【高阶武器库】\n▶ 多倍体融合：使用英文逗号拼接多个子文件，并务必在高级选项配置「亚组前缀」。\n▶ 系统发育专版：强烈建议勾选“仅提取最长转录本”，可极大降低建树冗余度。\n▶ 内存超限保护：面对 10GB 以上麦类或多倍体基因组，请开启「低内存模式」，此时 FASTA 必须先解压为纯文本格式。\n\n【输出文件矩阵】\n• ALL.standard.gff3 (层级清洗后的完美注释)\n• PREFIX.bed (极简区间坐标)\n• PREFIX.cds / .pep (靶向提取的核酸/蛋白库)\n• PREFIX.id_list (新旧 ID 溯源映射桥)\n\n【全局快捷操作】\n• Ctrl+Q : 终止服务     • Ctrl+L : 中英热切\n• Ctrl+D : 切换暗/亮    • F1 : 呼出本手册"
+  },
+  "bindings": {
+    "quit":        "退出",
+    "toggle_lang": "语言",
+    "run":         "本地运行",
+    "gen_script":  "生成脚本",
+    "help":        "帮助"
+  },
+  "validation": {
+    "gff_required":          "GFF 注释文件路径不得为空，请选择文件。",
+    "fasta_required":        "FASTA 基因组路径不得为空，请选择文件。",
+    "prefix_required":       "请指定一个干净的输出前缀 (例: Zea_mays)。",
+    "gff_not_found":         "GFF 文件系统寻址失败：{path}",
+    "fasta_not_found":       "FASTA 文件系统寻址失败：{path}",
+    "count_mismatch":        "GFF 与 FASTA 的分卷数量不匹配 (多倍体模式必须成对出现)。",
+    "prefix_count_mismatch": "亚基因组前缀数量与输入文件对数无法对应。",
+    "step_invalid":          "基因编号步长违规，请填写正整数。",
+    "walltime_invalid":      "Walltime 格式违规，必须遵循 HH:MM:SS 标准。",
+    "mem_invalid":           "内存分配大小异常，须为正整数(GB)。",
+    "nodes_invalid":         "节点数分配异常，须为正整数。",
+    "cpus_invalid":          "线程/核心数异常，须为正整数。"
+  },
+  "notify": {
+    "script_copied":  "脚本已拷贝至系统剪贴板，请到终端 vim 中粘贴。",
+    "script_saved":   "调度脚本已安全落盘至：{path}",
+    "log_copied":     "执行日志已拷贝至剪贴板。",
+    "lang_switched":  "Global Language Switched to: {lang}"
+  }
+}
