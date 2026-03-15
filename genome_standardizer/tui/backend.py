@@ -121,7 +121,7 @@ class _ThreadQueueHandler(logging.Handler):
         try:
             self._q.put_nowait({
                 "level":   record.levelname,
-                "message": self.format(record),
+                "message": self.format(record).rstrip(),
             })
         except Exception:
             self.handleError(record)

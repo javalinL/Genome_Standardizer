@@ -25,20 +25,20 @@ TabPane {
     overflow-y: auto;
 }
 
-/* Input Grids and Containers */
-.input-grid {
-    layout: grid;
-    grid-size: 4;
-    grid-columns: 10fr 10fr 10fr 2fr;
-    grid-rows: 3;
-    height: auto;
-    margin-bottom: 1;
-}
-
-.input-row {
-    layout: horizontal;
+/* Input rows — label inline with input */
+.field-row {
     height: auto;
     margin-bottom: 0;
+}
+
+.field-label {
+    width: 22;
+    padding: 1 1;
+    color: $text-muted;
+}
+
+.step-input {
+    width: 8;
 }
 
 Input {
@@ -71,7 +71,7 @@ Switch {
 }
 
 .switch-label {
-    padding-top: 1;
+    padding-top: 0;
     margin-right: 3;
 }
 
@@ -116,6 +116,7 @@ Button {
     border: solid $primary-muted;
     background: $surface-darken-1;
     padding: 0 1;
+    scrollbar-gutter: stable;
 }
 
 /* Modal Screens */

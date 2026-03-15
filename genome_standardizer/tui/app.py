@@ -99,30 +99,27 @@ class GstdTuiApp(App):
             # ── 1. RUN TAB ──────────────────────────────────────────────────
             with TabPane(self.i18n.t("tabs.run"), id="tab_run"):
                 yield Label(self.i18n.t("input.section_title"), classes="section-title", id="input_sec_title")
-                with Vertical(classes="input-row"):
-                    yield Label(self.i18n.t("input.gff_label"), id="gff_label")
-                    with Horizontal():
-                        yield Input(placeholder=self.i18n.t("input.gff_placeholder"), id="gff_input")
-                        yield Button(self.i18n.t("input.browse_btn"), id="gff_browse_btn")
+                with Horizontal(classes="field-row"):
+                    yield Label(self.i18n.t("input.gff_label"), id="gff_label", classes="field-label")
+                    yield Input(placeholder=self.i18n.t("input.gff_placeholder"), id="gff_input")
+                    yield Button(self.i18n.t("input.browse_btn"), id="gff_browse_btn")
 
-                with Vertical(classes="input-row"):
-                    yield Label(self.i18n.t("input.fasta_label"), id="fasta_label")
-                    with Horizontal():
-                        yield Input(placeholder=self.i18n.t("input.fasta_placeholder"), id="fasta_input")
-                        yield Button(self.i18n.t("input.browse_btn"), id="fasta_browse_btn")
+                with Horizontal(classes="field-row"):
+                    yield Label(self.i18n.t("input.fasta_label"), id="fasta_label", classes="field-label")
+                    yield Input(placeholder=self.i18n.t("input.fasta_placeholder"), id="fasta_input")
+                    yield Button(self.i18n.t("input.browse_btn"), id="fasta_browse_btn")
 
-                with Vertical(classes="input-row"):
-                    yield Label(self.i18n.t("input.prefix_label"), id="prefix_label")
+                with Horizontal(classes="field-row"):
+                    yield Label(self.i18n.t("input.prefix_label"), id="prefix_label", classes="field-label")
                     yield Input(placeholder=self.i18n.t("input.prefix_placeholder"), id="prefix_input")
 
                 yield Label(self.i18n.t("input.multi_file_hint"), id="multi_file_hint", classes="text-muted")
 
                 # Basic Options
                 yield Label(self.i18n.t("basic_options.section_title"), classes="section-title", id="basic_sec_title")
-                with Horizontal(classes="toggles-container"):
-                    with Vertical(classes="input-row"):
-                        yield Label(self.i18n.t("basic_options.step_label"), id="step_label")
-                        yield Input(value="10", id="step_input", type="integer")
+                with Horizontal(classes="field-row"):
+                    yield Label(self.i18n.t("basic_options.step_label"), id="step_label", classes="field-label")
+                    yield Input(value="10", id="step_input", type="integer", classes="step-input")
                 with Horizontal(classes="toggles-container"):
                     yield Switch(value=False, id="longest_switch")
                     yield Label(self.i18n.t("basic_options.longest_label"), id="longest_label", classes="switch-label")
@@ -134,8 +131,9 @@ class GstdTuiApp(App):
 
                 # Advanced Collapsible
                 with Collapsible(title=self.i18n.t("advanced_options.section_title"), id="advanced_collapsible"):
-                    with Vertical(classes="input-row"):
-                        yield Label(self.i18n.t("advanced_options.add_prefix_label"), id="add_prefix_label")
+                    with Horizontal(classes="field-row"):
+                        yield Label(self.i18n.t("advanced_options.add_prefix_label"), id="add_prefix_label",
+                                    classes="field-label")
                         yield Input(placeholder=self.i18n.t("advanced_options.add_prefix_placeholder"),
                                     id="add_prefix_input")
                     with Horizontal(classes="toggles-container"):
@@ -466,7 +464,9 @@ class GstdTuiApp(App):
                         pass
                 elif msg_type == "log":
                     try:
-                        self.query_one("#rich_log", RichLog).write(msg["message"])
+                        clean = msg["message"].rstrip()
+                        if clean:
+                            self.query_one("#rich_log", RichLog).write(clean)
                     except Exception:
                         pass
                 elif msg_type == "result":
@@ -486,7 +486,7 @@ class GstdTuiApp(App):
         self.notify(done_msg, severity="information")
         try:
             log = self.query_one("#rich_log", RichLog)
-            log.write(f"\n{done_msg}")
+            log.write(done_msg)
             log.write(summary)
         except Exception:
             pass
