@@ -35,8 +35,8 @@ class FileBrowserModal(ModalScreen[str]):
         with Vertical(id="file_browser_container"):
             yield Label(self.app.i18n.t("file_browser.title"), classes="section-title", id="fb_title")
             yield Label(self.app.i18n.t("file_browser.hint"), id="fb_hint")
-            self.tree = DirectoryTree(os.path.expanduser("~"), id="file_tree")
-            yield self.tree
+            self._dir_tree = DirectoryTree(os.path.expanduser("~"), id="file_tree")
+            yield self._dir_tree
             with Horizontal(classes="modal-buttons"):
                 yield Button(self.app.i18n.t("buttons.cancel"), id="cancel_btn", variant="error")
                 yield Button(self.app.i18n.t("buttons.confirm"), id="confirm_btn", variant="success")
@@ -45,8 +45,8 @@ class FileBrowserModal(ModalScreen[str]):
         if event.button.id == "cancel_btn":
             self.dismiss(None)
         elif event.button.id == "confirm_btn":
-            if self.tree.cursor_node and self.tree.cursor_node.data:
-                self.dismiss(self.tree.cursor_node.data.path)
+            if self._dir_tree.cursor_node and self._dir_tree.cursor_node.data:
+                self.dismiss(self._dir_tree.cursor_node.data.path)
             else:
                 self.dismiss(None)
 
